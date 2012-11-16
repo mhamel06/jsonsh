@@ -52,6 +52,7 @@ h1 span
 	margin: 0 auto;
 	position: relative;
 }
+
 #source
 {
 	width: 918px;
@@ -96,6 +97,9 @@ h1 span
 .fork:hover
 {
 	color: #f05e07;
+}
+a{
+color: #f05e07;
 }
 .reset
 {
