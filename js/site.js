@@ -24,6 +24,7 @@ var jsonsh = {
 	/** Initialize JSONSH */
 	init: function()
 	{
+		var loadId = jsonsh.getQueryParam('shareId');
 		/** Add Placeholder Text for browsers that do not support it */
 		jQuery('input[placeholder], textarea[placeholder]').placeholder();
 		
@@ -35,6 +36,14 @@ var jsonsh = {
 			return false;
 		});
 		
+		$('#share').click(function(){
+			jsonsh.saveJson();
+			return false;
+		});
+		
+		if(loadId){
+			jsonsh.loadJson(loadId);
+		}
 		/** Look for changes to JSON source */
 		jQuery('#source').keyup(function()
 		{
@@ -55,6 +64,72 @@ var jsonsh = {
 		});
 	},
 	
+	getQueryParam: function(name)
+	{
+	  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+	  var regexS = "[\\?&]" + name + "=([^&#]*)";
+	  var regex = new RegExp(regexS);
+	  var results = regex.exec(window.location.search);
+	  if(results == null)
+	    return false;
+	  else
+	    return decodeURIComponent(results[1].replace(/\+/g, " "));
+	},
+	
+	loadJson: function(id){
+		$.ajax({
+			url: '/svc/couch/sharejson/' + id,
+			contentType: 'application/json',
+			type: 'GET',
+			success: function(data, textStatus, jqXHR){
+				var resp = JSON.parse(data);						
+				$('#source').val(JSON.stringify(resp.json));
+				jsonsh.make_pretty();
+				
+			}
+		});
+	},
+	
+	/**
+	* Send the json to couchdb to be saved
+	**/
+	
+	saveJson: function(){
+		var data = $('#source').val();
+		var x = JSON.parse(data);
+		data = {json: x};
+		data = JSON.stringify(data);
+		$.ajax({
+			url: '/svc/couch/sharejson',
+			data: data,
+			contentType: 'application/json',
+			type: 'POST',
+			success: function(data, textStatus, jqXHR){
+				var resp = JSON.parse(data),
+						base = window.location.protocol + "//" + window.location.hostname;
+						base += '?shareId=' + resp.id;
+				$.ajax({
+					url: 'https://www.googleapis.com/urlshortener/v1/url',
+					data: JSON.stringify({"longUrl": base}),
+					contentType: 'application/json',
+					type: 'POST',
+					success: function(data, textStatus, jqXHR){
+
+						var url = JSON.parse(data);
+						url = url.id;
+						$('#shareLink').attr('href', url);
+						$('#shareLink').html(url);
+					}
+				});
+						
+
+			}
+		});
+	},
+	
+	getUrl: function(id){
+		
+	},
 	/**  */
 	make_pretty: function()
 	{
