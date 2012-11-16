@@ -114,9 +114,14 @@ var jsonsh = {
 					contentType: 'application/json',
 					type: 'POST',
 					success: function(data, textStatus, jqXHR){
-
-						var url = JSON.parse(data);
-						url = url.id;
+						var data,
+								url;
+								
+						if(typeof(data) == "string"){
+							data = JSON.parse(data);
+						}		
+										
+						url = data.id;
 						$('#shareLink').attr('href', url);
 						$('#shareLink').html(url);
 					}
