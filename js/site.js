@@ -109,7 +109,7 @@ var jsonsh = {
 						base = window.location.protocol + "//" + window.location.hostname;
 						base += '?shareId=' + resp.id;
 				$.ajax({
-					url: 'https://www.googleapis.com/urlshortener/v1/url',
+					url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDOVPHSuha3jwS3iyAuHJ8KMENYfUZQabo',
 					data: JSON.stringify({"longUrl": base}),
 					contentType: 'application/json',
 					type: 'POST',
