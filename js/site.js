@@ -7,7 +7,22 @@
  *
  * @namespace jsonsh 
  */
+
+ 
+
 var jsonsh = {
+
+	themes : {
+		"Standard": "css\/syntax.css",
+		"Big" :"css\/big.css",
+		"TNight":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/tomorrow-night.css",
+		"TNight-blue":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/tomorrow-night-blue.css",
+		"TNight-80s":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/tomorrow-night-eighties.css",
+		"Hemisu-light":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/hemisu-light.css",
+		"Hemisu-dark":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/hemisu-dark.css",
+		"Github":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/github.css",
+		"Vibrant":"http://jmblog.github.com/color-themes-for-google-code-prettify/css/themes/vibrant-ink.css"
+	},
 	
 	/** Track whether we've done an initial reformatting */
 	is_pretty: false,
@@ -17,14 +32,140 @@ var jsonsh = {
 
 	/** Single place to update how fast/slow the animations will take */
 	animation_speed: 250,
+	theme_speed:400,
 
 	/** Single place to update how you want to manage the tabbing in your reformatting */
 	tab_space: '  ',
 	
+	defaultStyleId : "Standard",
+	currentStyleId : "Standard",
+	currentStyle: "",
+	zoomLevel: 100,
+
+
+	setTheme: function(themeId){
+
+		var themeFile = this.themes[themeId];
+		this.currentStyleId = themeId;
+
+		$('#resultContainer').fadeOut(jsonsh.theme_speed,function(){
+			dstyle.remove(jsonsh.currentStyle,"css");
+			jsonsh.currentStyle = themeFile;
+			dstyle.add(jsonsh.currentStyle,"css");
+			$('#resultContainer').fadeIn(jsonsh.theme_speed);
+		});		
+	},
+
+	setZoom:(function(){
+	//This runs initially and returns a function that will be used afterwards based on the browsers setup
+	var test = document.createElement('div');
+	//if there's a valid property in the browser
+	//it will return ""
+	//undefined means the browser doesn't know
+	//what you're talking about
+	    var zoomSupport = true;
+        if (test.style.zoom === undefined) {
+            zoomSupport = false;
+        }
+        delete test;
+
+        if(zoomSupport){
+			return function(zoomLevel){
+				$("#output_wrapper").attr('style','zoom:'+zoomLevel+'%;');
+			};
+        }else{
+        	return function(zoomLevel){
+
+        		$('#zoomIn').hide();
+        		$('#zoomOut').hide();
+        		//var scale =(zoomLevel/100).toFixed(2);
+        		//var style = "-o-transform: scale("+scale+");-moz-transform: scale("+scale+");transform: scale("+scale+")";
+        		//$("#output_wrapper").attr('style',style);				
+        	}
+        }
+	})(),
+
 	/** Initialize JSONSH */
 	init: function()
 	{
+
 		var loadId = jsonsh.getQueryParam('shareId');
+		var themeName = jsonsh.getQueryParam('theme');
+		var zoom = jsonsh.getQueryParam('zoom');
+		var contentArray = [];
+		
+		$('#resultContainer').hide();
+		$('#btnBeautify').hide();
+		
+		if(!loadId){
+		//there is no id so this is a person here to share
+			$('#btnSource').click();	
+		}
+
+		if(themeName){
+			//No theme so use the standard
+			if(this.themes.hasOwnProperty(themeName))
+			{
+				dstyle.add(this.themes[themeName],"css");
+				this.currentStyle = this.themes[themeName];
+			}else{
+				dstyle.add("css/syntax.css","css");
+				this.currentStyle = "css/syntax.css";
+			}
+		}else{
+				dstyle.add("css/syntax.css","css");
+				this.currentStyle = "css/syntax.css";
+		}
+
+		if(zoom){
+			this.zoomLevel = parseInt(zoom);
+			jsonsh.setZoom(this.zoomLevel);
+			//$("#output_wrapper").attr('style','font-size:'+jsonsh.zoomLevel+'%;')
+		}
+
+
+		$('#resultContainer').fadeIn(jsonsh.theme_speed);
+		
+		
+
+		$('#btnSource').click(function(){
+			//Save a current copy of the source value
+			jsonsh.safeCopy = $('#source').val();
+			jQuery('#parseError').hide();
+		
+		});
+
+		$('#btnCloseSource').click(function(){
+			$('#source').val(jsonsh.safeCopy);
+			
+			jsonsh.make_pretty();
+		});
+
+		$('#zoomIn').click(function(){
+			
+			jsonsh.zoomLevel+=10;
+			jsonsh.setZoom(jsonsh.zoomLevel);
+			//$("#output_wrapper").attr('style','font-size:'+jsonsh.zoomLevel+'%;')
+		});
+
+		$('#zoomOut').click(function(){
+
+			jsonsh.zoomLevel-=10;
+			jsonsh.setZoom(jsonsh.zoomLevel);
+			//$("#output_wrapper").attr('style','font-size:'+jsonsh.zoomLevel+'%;')
+		});
+
+
+		//Add content programatically
+
+		////Build the style dropdown
+
+		//contentArray.push('<li><a id="styleNone" href="#" >None</a></li>');
+		for(item in this.themes){
+			contentArray.push('<li><a onClick="jsonsh.setTheme(\''+item+'\');" href="#" >'+item+'</a></li>');			
+		}
+		$('#themeDropdown').html(contentArray.join(""));
+
 		/** Add Placeholder Text for browsers that do not support it */
 		jQuery('input[placeholder], textarea[placeholder]').placeholder();
 		
@@ -32,37 +173,79 @@ var jsonsh = {
 		jQuery('.logo, .reset').click(function()
 		{
 			jsonsh.reset_interface();
-
 			return false;
 		});
 		
+		jQuery('#parseError').hide();
+		
+		//Add Event Handlers
+		$('#styleNone').click(function(){
+
+			$('#resultContainer').fadeOut(jsonsh.theme_speed,function(){
+			dstyle.remove(jsonsh.currentStyle,"css");
+			jsonsh.currentStyle = "";
+			$('#resultContainer').fadeIn(jsonsh.theme_speed);
+				
+			});
+			
+		});
+
 		$('#share').click(function(){
-			jsonsh.saveJson();
-			return false;
+		
+		jsonsh.setShare('http://goo.gl/234234');
+			//jsonsh.saveJson();
+			//return false;
 		});
 		
 		if(loadId){
 			jsonsh.loadJson(loadId);
 		}
+		
+		jQuery('#btnBeautify').click(function(){
+			jsonsh.make_pretty();
+			$('#pageWrapper').fadeIn(jsonsh.animation_speed);
+		});
+		
 		/** Look for changes to JSON source */
 		jQuery('#source').keyup(function()
 		{
 			/** Only process JSON if there is some, and it is not the same as before */
-			if(jQuery(this).val() != jsonsh.old_value)
+			var currentString = jQuery(this).val();
+			if( (currentString != jsonsh.old_value) && currentString.length != 0)
 			{
 				/** Passed out initial tests, go ahead and make it pretty */
-				jsonsh.make_pretty();
+				//jsonsh.make_pretty();				
 				
+				jsonsh.updateParseError(currentString);
+								
 				/** Update our old value to the latest and greatest */
-				jsonsh.old_value = jQuery(this).val();
+				jsonsh.old_value = currentString;
 			}
 			/** Source is blank now, no need to do anything, so reset interface */
-			else if(jQuery(this).val() == '')
-			{
+			else if(currentString == '')
+			{	
+				jQuery('#parseError').html("");
+				jQuery('#parseError').fadeOut();
 				jsonsh.reset_interface();
 			}
 		});
 	},
+
+	updateParseError: function(sourcestring){
+
+				var result = jsonsh.safeLint(sourcestring);
+				if(result.success){
+						jQuery('').html('');
+						jQuery('#parseError').fadeOut(jsonsh.animation_speed,function(){
+						jQuery('#btnBeautify').fadeIn(jsonsh.animation_speed);
+					});									
+				}else{
+						jQuery('#btnBeautify').fadeOut(jsonsh.animation_speed,function(){					
+						jQuery('#parseError').addClass('fail').html(result.object.message).fadeIn(jsonsh.animation_speed);
+					});					
+				}
+	},
+
 	
 	getQueryParam: function(name)
 	{
@@ -77,6 +260,7 @@ var jsonsh = {
 	},
 	
 	loadJson: function(id){
+		/*
 		$.ajax({
 			url: '/svc/couch/sharejson/' + id,
 			contentType: 'application/json',
@@ -87,7 +271,43 @@ var jsonsh = {
 				jsonsh.make_pretty();
 				
 			}
-		});
+		});*/
+		var testJson = 
+		{
+			toplevel:
+			{
+				some:'stuff',
+				to:'go',
+				'in': "the",
+				test :['json','object']
+			},
+			anumber:5,
+			anothernumber:5000		
+		};
+		
+		var jsonString =  JSON.stringify(testJson);//+"}";
+		var parseResult = this.safeLint(jsonString);
+		
+		if(!parseResult.success){
+		console.dir(parseResult.object);
+		}
+		
+		$('#source').val(JSON.stringify(testJson));
+		jsonsh.make_pretty();				
+	},
+	
+	
+	safeLint: function(jsonString){	
+	var result = {};
+	try{
+		result.object = jsonlint.parse(jsonString)
+		result.success = true;
+		
+		}catch(error){
+			result.success = false;
+			result.object = error;			
+		}
+		return result;
 	},
 	
 	/**
@@ -99,6 +319,8 @@ var jsonsh = {
 		var x = JSON.parse(data);
 		data = {json: x};
 		data = JSON.stringify(data);
+		
+		//Save the json in a couchdb page
 		$.ajax({
 			url: '/svc/couch/sharejson',
 			data: data,
@@ -108,6 +330,16 @@ var jsonsh = {
 				var resp = JSON.parse(data),
 						base = window.location.protocol + "//" + window.location.hostname;
 						base += '?shareId=' + resp.id;
+
+						//Add current theme
+						if(jsonsh.currentStyle != jsonsh.defaultStyle){
+							base += "&theme="+jsonsh.currentStyleId;
+						}
+						//Add current zoom	
+						if(jsonsh.zoomLevel!= 100){
+							base += "&zoom="+jsonsh.zoomLevel;
+						}
+
 				$.ajax({
 					url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyDOVPHSuha3jwS3iyAuHJ8KMENYfUZQabo',
 					data: JSON.stringify({"longUrl": base}),
@@ -122,14 +354,17 @@ var jsonsh = {
 						}		
 										
 						url = data.id;
-						$('#shareLink').attr('href', url);
-						$('#shareLink').html(url);
+						this.setShare(url);
 					}
 				});
 						
-
 			}
 		});
+	},
+	
+	setShare:function(url){
+		$('#shareLink').attr('href', url);
+		$('#shareLink').html(url);	
 	},
 	
 	getUrl: function(id){
@@ -172,7 +407,7 @@ var jsonsh = {
 					prettyPrint();
 					
 					/** Allow the user to click to highlight a row to keep mental track of things better */
-					jQuery('li').click(function(){
+					jQuery('pre ol li').click(function(){
 						jQuery(this).toggleClass('select');
 						
 						//For code folding

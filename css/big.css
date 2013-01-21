@@ -1,0 +1,110 @@
+* Syntax Highlighter Styles */
+.pln
+{
+	color: #000;
+}
+@media screen
+{
+	.str
+	{
+		color: #BBB;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.kwd
+	{
+		color: #6f9ac5;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.com
+	{
+		color: #800;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.typ
+	{
+		color: #606;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.lit
+	{
+		color: #6fc5bc;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.pun, .opn, .clo
+	{
+		color: #f09158;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.tag
+	{
+		color: #008;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.atn
+	{
+		color: #606;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.atv
+	{
+		color: #080;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.dec,.var
+	{
+		color: #606;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+	.fun
+	{
+		color: red;
+		font-family: 'Anonymous Pro', sans-serif;
+		font-size: 18px;
+	}
+}
+pre.prettyprint
+{
+	padding: 2px;
+	border: none;
+	background-color: #222;
+	font-family: 'Anonymous Pro', sans-serif;
+	font-size: 18px;
+	overflow: auto;
+}
+ol.linenums
+{
+	margin-top: 0;
+	margin-bottom: 0;
+	font-family: 'Anonymous Pro', sans-serif;
+	font-size: 14px;
+}
+li.L0, li.L1, li.L2, li.L3, li.L4, li.L5, li.L6, li.L7, li.L8, li.L9
+{
+    color: #444;
+    list-style-type: decimal;
+	line-height: 25px;
+	font-family: 'Anonymous Pro', sans-serif;
+	font-size: 18px;
+}
+li.L1,li.L3,li.L5,li.L7,li.L9
+{
+	background-color: #272727;
+	font-family: 'Anonymous Pro', sans-serif;
+	font-size: 18px;
+}
+pre.ol.li:hover, pre.ol.li.select
+{
+	background-color: #111;
+	font-family: 'Anonymous Pro', sans-serif;
+	font-size: 18px;
+}

@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 			
 		<title>JSON Syntax Highlight &amp; Format</title>
-		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="JSON Syntax Highlighter - Paste Ugly JSON and I'll Make it Pretty ;)" />
 		<meta name="keywords" content="JSON, Syntax, Highlight, Format, Reformat" />
 		<meta name="author" content="Peter Schmalfeldt - http://www.peterschmalfeldt.com" />
@@ -12,20 +12,98 @@
 		<meta name="robots" content="index, follow" />
 		
 		<link href='http://fonts.googleapis.com/css?family=Anonymous+Pro' rel='stylesheet' type='text/css'>
-		<link type="text/css" rel="stylesheet" href="css/style.css?v=0.5" />
-		<link type="image/x-icon" rel="shortcut icon" href="favicon.ico?v=0.5" />
 
+		<!-- Old CSS <link type="text/css" rel="stylesheet" href="css/style.css?v=0.5" /> -->
+		<link type="text/css" rel="stylesheet" href="css/bootstrap.css"/>
+		
+		<script type="text/javascript" src="js/dstyle.js"></script>
+		<!-- <link type="text/css" rel="stylesheet" href="css/syntax.css"/> -->	
+		<link type="image/x-icon" rel="shortcut icon" href="favicon.ico?v=0.5" />
 	</head>
 	<body>
-		<div id="wrapper">
-			<a href="#" class="reset">reset</a>
-			<a href="#" id="share">Share Json</a>
-			<a href="#" id="shareLink" target="_blank"></a>
-			<textarea id="source" autocomplete="off" title="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" placeholder="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" spellcheck="false"></textarea>
+		<div id='pageWrapper'>
+		<!-- Navigation Bar -->
+		<div class="container">
+			<div class="row container">
+				<div class="span10">
+					<div class="navbar navbar-static">
+						<div class="navbar-inner">
+							<div class="container">								             
+								<a class="brand" href="#">Share JSON</a>								        
+						            
+						            <ul class="nav">
+						              <li><a id="btnSource" href="#sourceModal" data-toggle="modal">Edit</a></li>
+						              <li><a id="share" href="#shareModal" data-toggle="modal">Share</a></li>
+						            </ul>
+											
+									<ul class="nav pull-right">										
+										<li>  
+											<a class="dropdown-toggle" data-toggle="dropdown" href="#">Style<b class="caret"></b></a>
+											  <ul id="themeDropdown"class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+											    
+											    
+											  </ul>
+										</li>
+									</ul>
+				          	</div>
+				        </div>
+			      	</div>
+			    </div>
+			</div>
+		</div>
+
+		
+	<!-- Content area -->
+	<div id="resultContainer"class="row container">
+  		<div class="span10">
+  			<div class="btn-toolbar pull-right">
+			  <div class="btn-group">
+			   <a id="zoomIn"	class="btn" href="#"><i class="icon-plus"></i></a>
+			   <a id="zoomOut"	class="btn" href="#"><i class="icon-minus"></i></a>
+			  </div>
+			</div>
+		
+  		</div>
+  		<div class="span10">  			
 			<pre id="result"></pre>
 			<div id="output_wrapper"></div>
 		</div>
+	</div>
+</div>
+
+	<!-- Edit Source Modal -->
+			<div id="sourceModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  
+			  <div class="modal-header">
+			    <button id="btnCloseSource" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3 id="myModalLabel">Add gross JSON here...</h3>
+			  </div>
+			  
+			  <div class="modal-body">
+			    <textarea rows='5' style="width:95%;"id="source" autocomplete="off" title="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" placeholder="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" spellcheck="false"></textarea><br/>
+			    <pre id="parseError"></pre>
+			    <button id="btnBeautify" class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
+			  </div>
+			</div>
+
+
+		<!-- Share Link Modal -->
+			<div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  
+			  <div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			    <h3 id="myModalLabel">Share pretty Json</h3>
+			  </div>
+			  
+			  <div class="modal-body">
+			  <a href="#" id="shareLink" target="_blank"></a>
+			  </div>			
+			</div>
+
+	<!-- Scripts -->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		
 		<script type="text/javascript" src="js/site.js?v=0.5"></script>
 		<script type="text/javascript">
 
