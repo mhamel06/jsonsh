@@ -125,9 +125,32 @@ var jsonsh = {
 
 
 		$('#resultContainer').fadeIn(jsonsh.theme_speed);
-		
-		
+	
+		//////////////////////////////
+		//Add content programatically
 
+		////Build the style dropdown
+		//contentArray.push('<li><a id="styleNone" href="#" >None</a></li>');
+		for(item in this.themes){
+			contentArray.push('<li><a onClick="jsonsh.setTheme(\''+item+'\');" href="#" >'+item+'</a></li>');			
+		}
+		$('#themeDropdown').html(contentArray.join(""));
+
+		/** Add Placeholder Text for browsers that do not support it */
+		jQuery('input[placeholder], textarea[placeholder]').placeholder();
+		
+		/** Allow logo and reset link to reset interface */
+		jQuery('.logo, .reset').click(function()
+		{
+			jsonsh.reset_interface();
+			return false;
+		});
+		
+		jQuery('#parseError').hide();
+
+		/////////////////////
+		//Add Event Handlers
+		
 		$('#btnSource').click(function(){
 			//Save a current copy of the source value
 			jsonsh.safeCopy = $('#source').val();
@@ -155,30 +178,6 @@ var jsonsh = {
 			//$("#output_wrapper").attr('style','font-size:'+jsonsh.zoomLevel+'%;')
 		});
 
-
-		//Add content programatically
-
-		////Build the style dropdown
-
-		//contentArray.push('<li><a id="styleNone" href="#" >None</a></li>');
-		for(item in this.themes){
-			contentArray.push('<li><a onClick="jsonsh.setTheme(\''+item+'\');" href="#" >'+item+'</a></li>');			
-		}
-		$('#themeDropdown').html(contentArray.join(""));
-
-		/** Add Placeholder Text for browsers that do not support it */
-		jQuery('input[placeholder], textarea[placeholder]').placeholder();
-		
-		/** Allow logo and reset link to reset interface */
-		jQuery('.logo, .reset').click(function()
-		{
-			jsonsh.reset_interface();
-			return false;
-		});
-		
-		jQuery('#parseError').hide();
-		
-		//Add Event Handlers
 		$('#styleNone').click(function(){
 
 			$('#resultContainer').fadeOut(jsonsh.theme_speed,function(){
@@ -191,10 +190,8 @@ var jsonsh = {
 		});
 
 		$('#share').click(function(){
-		
-		jsonsh.setShare('http://goo.gl/234234');
-			//jsonsh.saveJson();
-			//return false;
+			$('#shareLink').hide();
+			jsonsh.saveJson();
 		});
 		
 		if(loadId){
@@ -260,40 +257,39 @@ var jsonsh = {
 	},
 	
 	loadJson: function(id){
-		/*
-		$.ajax({
-			url: '/svc/couch/sharejson/' + id,
-			contentType: 'application/json',
-			type: 'GET',
-			success: function(data, textStatus, jqXHR){
-				var resp = JSON.parse(data);						
-				$('#source').val(JSON.stringify(resp.json));
-				jsonsh.make_pretty();
-				
-			}
-		});*/
-		var testJson = 
-		{
-			toplevel:
-			{
-				some:'stuff',
-				to:'go',
-				'in': "the",
-				test :['json','object']
-			},
-			anumber:5,
-			anothernumber:5000		
-		};
-		
-		var jsonString =  JSON.stringify(testJson);//+"}";
-		var parseResult = this.safeLint(jsonString);
-		
-		if(!parseResult.success){
-		console.dir(parseResult.object);
-		}
-		
-		$('#source').val(JSON.stringify(testJson));
-		jsonsh.make_pretty();				
+		if(id=='debug'){
+			var testJson = 
+					{
+						toplevel:
+						{
+							some:'stuff',
+							to:'go',
+							'in': "the",
+							test :['json','object']
+						},
+						anumber:5,
+						anothernumber:5000		
+					};
+					
+					var jsonString =  JSON.stringify(testJson);//+"}";
+					var parseResult = this.safeLint(jsonString);
+
+					$('#source').val(JSON.stringify(testJson));
+					jsonsh.make_pretty();
+		}else{
+
+			$.ajax({
+				url: '/svc/couch/sharejson/' + id,
+				contentType: 'application/json',
+				type: 'GET',
+				success: function(data, textStatus, jqXHR){
+					var resp = JSON.parse(data);						
+					$('#source').val(JSON.stringify(resp.json));
+					jsonsh.make_pretty();
+					
+				}
+			});	
+		}				
 	},
 	
 	
@@ -364,7 +360,8 @@ var jsonsh = {
 	
 	setShare:function(url){
 		$('#shareLink').attr('href', url);
-		$('#shareLink').html(url);	
+		$('#shareLink').html(url);
+		$('#shareLink').fadeIn(jsonsh.animation_speed);	
 	},
 	
 	getUrl: function(id){
