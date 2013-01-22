@@ -8,7 +8,7 @@
  * @namespace jsonsh 
  */
 
- var clip = new ZeroClipboard( document.getElementById("copy-button"), {
+ var clip = new ZeroClipboard( document.getElementById("my-button"), {
    moviePath: "/zeroClip/ZeroClipboard.swf"
  });
 
