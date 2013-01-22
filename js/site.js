@@ -37,8 +37,8 @@ var jsonsh = {
 	/** Single place to update how you want to manage the tabbing in your reformatting */
 	tab_space: '  ',
 	
-	defaultStyleId : "Standard",
-	currentStyleId : "Standard",
+	defaultStyleId : "Github",
+	currentStyleId : this.defaultStyleId,
 	currentStyle: "",
 	zoomLevel: 100,
 
@@ -108,13 +108,18 @@ var jsonsh = {
 			{
 				dstyle.add(this.themes[themeName],"css");
 				this.currentStyle = this.themes[themeName];
+				this.currentStyleId = this.themes[themeName];
+				
 			}else{
-				dstyle.add("css/syntax.css","css");
-				this.currentStyle = "css/syntax.css";
+				dstyle.add(this.themes[this.defaultStyleId],"css");
+				this.currentStyle = this.themes[this.defaultStyleId];
+				this.currentStyleId = this.defaultStyleId;
+
 			}
 		}else{
-				dstyle.add("css/syntax.css","css");
-				this.currentStyle = "css/syntax.css";
+				dstyle.add(this.themes[this.defaultStyleId],"css");
+				this.currentStyle = this.themes[this.defaultStyleId];
+				this.currentStyleId = this.defaultStyleId;
 		}
 
 		if(zoom){
@@ -350,7 +355,7 @@ var jsonsh = {
 						}		
 										
 						url = data.id;
-						this.setShare(url);
+						jasonsh.setShare(url);
 					}
 				});
 						
