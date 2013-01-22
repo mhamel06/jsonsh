@@ -1,0 +1,3 @@
+[submodule "zeroClip"]
+	path = zeroClip
+	url = https://github.com/jonrohan/ZeroClipboard.git
