@@ -355,7 +355,7 @@ var jsonsh = {
 						}		
 										
 						url = data.id;
-						jasonsh.setShare(url);
+						jsonsh.setShare(url);
 					}
 				});
 						
