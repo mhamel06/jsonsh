@@ -35,7 +35,7 @@
 						              <li><a id="btnSource" href="#sourceModal" data-toggle="modal">Edit</a></li>
 						              <li><a id="share" href="#shareModal" data-toggle="modal">Share</a></li>
 						            </ul>
-											
+												<a id="loginLink">Login</a>
 									<ul class="nav pull-right">										
 										<li>  
 											<a class="dropdown-toggle" data-toggle="dropdown" href="#">Style<b class="caret"></b></a>
@@ -105,9 +105,33 @@
 	<!-- Scripts -->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="js/github.js"></script>
 		<script type="text/javascript" charset="utf-8" src="zeroClip/ZeroClipboard.js">	</script>
 		
 		<script type="text/javascript" src="js/site.js?v=0.5"></script>
+		<script type="text/javascript" charset="utf-8">
+		$("#loginLink").on('click', function(){
+			window.location = "https://github.corp.millennialmedia.com/login/oauth/authorize?client_id=f2ee1e8dc1ecfb758206&scope=user"
+		});
+		var code = jsonsh.getQueryParam('code');
+		var authCookie = GithubAuth.getAuthCookie();
+		
+		if(!authCookie && code){
+			$.ajax({
+				url: '/svc/node/auth/' + code,				
+				contentType: 'application/json',
+				type: 'GET',
+				success: function(data, textStatus, jqXHR){
+					console.log(data);
+					if(data.access_token){
+						GithubAuth.setAuthCookie(data.access_token);
+					}
+				}			
+			});
+		}else if(authCookie){
+			GithubAuth.getUsername(authCookie);
+		}
+		</script>
 		<script type="text/javascript">
 
 		  var _gaq = _gaq || [];
