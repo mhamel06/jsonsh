@@ -21,6 +21,9 @@
 		<link type="image/x-icon" rel="shortcut icon" href="favicon.ico?v=0.5" />
 	</head>
 	<body>
+    <script type="text/x-handlebars">
+        <p>{{title}}</p>
+    </script>
 		<div id='pageWrapper'>
 		<!-- Navigation Bar -->
 		<div class="container">
@@ -105,12 +108,21 @@
 	<!-- Scripts -->
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
-        <script type="text/javascript" src="js/libs/thridpartylibs.js"></script>
+        <script type="text/javascript" src="js/libs/thirdparty.js"></script>
         <script type="text/javascript" src="js/libs/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" charset="utf-8" src="zeroClip/ZeroClipboard.js">	</script>
-		
+    <script type="text/javascript" charset="utf-8" src="zeroClip/ZeroClipboard.js">	</script>
+
+
+        <script type="text/javascript" src="js/libs/handlebars/handlebars.js"></script>
+    <script type="text/javascript" src="js/libs/ember/ember-1.0.0-pre.4.js"></script>
+    <script type="text/javascript" src="js/views/main_view.js"></script>
+
 		<script type="text/javascript" src="js/site.js?v=0.5"></script>
-		<script type="text/javascript">
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/router.js"></script>
+
+
+    <script type="text/javascript">
 
 		  var _gaq = _gaq || [];
 		  _gaq.push(['_setAccount', 'UA-31092804-1']);
