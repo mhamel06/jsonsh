@@ -27,11 +27,10 @@ var GithubAuth = {
 		$.ajax({
 			url: 'https://github.corp.millennialmedia.com/api/v3/user?access_token=' + token,				
 			contentType: 'application/json',
+			dataType: 'json',
 			type: 'GET',
 			success: function(data, textStatus, jqXHR){
-				console.log(data);
-				debugger;
-				$('#loginLink').html(data.name)
+				$('#loginLink').html(data.name);
 			}			
 		});
 	}
