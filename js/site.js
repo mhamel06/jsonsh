@@ -98,10 +98,12 @@ var jsonsh = {
 		
 		$('#resultContainer').hide();
 		$('#btnBeautify').hide();
+		$('#sourceModal').collapse('show');
 		
-		if(!loadId){
+		if(loadId){
 		//there is no id so this is a person here to share
-			$('#btnSource').click();	
+			//$('#btnSource').click();	
+			//$('#resultContainer').fadeIn(jsonsh.theme_speed);			
 		}
 
 		if(themeName){
@@ -131,7 +133,6 @@ var jsonsh = {
 		}
 
 
-		$('#resultContainer').fadeIn(jsonsh.theme_speed);
 	
 		//////////////////////////////
 		//Add content programatically
@@ -206,8 +207,10 @@ var jsonsh = {
 		}
 		
 		jQuery('#btnBeautify').click(function(){
+			$('#sourceModal').collapse('toggle');
+			$('#resultContainer').fadeIn(jsonsh.animation_speed);
 			jsonsh.make_pretty();
-			$('#pageWrapper').fadeIn(jsonsh.animation_speed);
+			
 		});
 		
 		/** Look for changes to JSON source */

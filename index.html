@@ -32,7 +32,7 @@
 								<a class="brand" href="#">Share JSON</a>								        
 						            
 			            <ul class="nav">
-			              <li><a id="btnSource" href="#sourceModal" data-toggle="modal">Edit</a></li>
+			              <li><a id="btnSource" href="#sourceModal" data-toggle="collapse">Edit</a></li>
 			              <li><a id="share" href="#shareModal" data-toggle="modal">Share</a></li>
 			            </ul>
 									<ul class="nav pull-right">			
@@ -63,8 +63,21 @@
 	</div>
 	<!-- List shares -->	
 	
+	
+	<!-- Edit Source Modal -->
+			<div id="sourceModal" class="row container collapse">
+			  
+			  
+			  <div class="span10">
+			    <textarea rows='5' style="width:95%;"id="source" autocomplete="off" title="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" placeholder="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" spellcheck="false"></textarea><br/>
+			    <pre id="parseError"></pre>
+			    <button id="btnBeautify" class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
+			  </div>
+			</div>
+	
+	
 	<!-- Content area -->
-	<div id="resultContainer"class="row container">
+	<div id="resultContainer"class="row container hide">
   		<div class="span10">
   			<div class="btn-toolbar pull-right">
 			  <div class="btn-group">
@@ -81,21 +94,7 @@
 	</div>
 </div>
 
-	<!-- Edit Source Modal -->
-			<div id="sourceModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  
-			  <div class="modal-header">
-			    <button id="btnCloseSource" type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			    <h3 id="myModalLabel">Add gross JSON here...</h3>
-			  </div>
-			  
-			  <div class="modal-body">
-			    <textarea rows='5' style="width:95%;"id="source" autocomplete="off" title="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" placeholder="Paste your ugly, compressed JSON in here. I'll make it pretty for you ;)" spellcheck="false"></textarea><br/>
-			    <pre id="parseError"></pre>
-			    <button id="btnBeautify" class="btn btn-large btn-primary" data-dismiss="modal" aria-hidden="true">Save</button>
-			  </div>
-			</div>
-
+	
 
 		<!-- Share Link Modal -->
 			<div id="shareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
