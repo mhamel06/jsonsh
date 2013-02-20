@@ -55,7 +55,7 @@ var jsonsh = {
 			jsonsh.currentStyle = themeFile;
 			dstyle.add(jsonsh.currentStyle,"css");
 			$('#resultContainer').fadeIn(jsonsh.theme_speed);
-		});		
+		});
 	},
 
 	setZoom:(function(){
@@ -98,10 +98,12 @@ var jsonsh = {
 		
 		$('#resultContainer').hide();
 		$('#btnBeautify').hide();
+		$('#sourceModal').collapse('show');
 		
-		if(!loadId){
+		if(loadId){
 		//there is no id so this is a person here to share
-			$('#btnSource').click();	
+			//$('#btnSource').click();	
+			//$('#resultContainer').fadeIn(jsonsh.theme_speed);			
 		}
 
 		if(themeName){
@@ -131,7 +133,6 @@ var jsonsh = {
 		}
 
 
-		$('#resultContainer').fadeIn(jsonsh.theme_speed);
 	
 		//////////////////////////////
 		//Add content programatically
@@ -206,8 +207,10 @@ var jsonsh = {
 		}
 		
 		jQuery('#btnBeautify').click(function(){
+			$('#sourceModal').collapse('toggle');
+			$('#resultContainer').fadeIn(jsonsh.animation_speed);
 			jsonsh.make_pretty();
-			$('#pageWrapper').fadeIn(jsonsh.animation_speed);
+			
 		});
 		
 		/** Look for changes to JSON source */
@@ -299,6 +302,28 @@ var jsonsh = {
 		}				
 	},
 	
+	findAllShares: function(){
+		
+		var key = GithubAuth.getAuthCookie();
+		if(key){
+			key = encodeURI('"' + key +'"');
+		}else{
+			return false;
+		}
+		
+		$.ajax({
+			url: '/svc/couch/sharejson/_design/shares/_view/by_token?key=' + key,
+			dataType: 'json',
+			type: 'GET',
+			success: function(data, textStatus, jqXHR){
+				var source   = $("#share-list-template").html();
+				var template = Handlebars.compile(source);
+				var html = template(data);
+				$('#userShares').html(html);
+					
+			}
+		});	
+	},
 	
 	safeLint: function(jsonString){	
 	var result = {};
@@ -320,7 +345,11 @@ var jsonsh = {
 	saveJson: function(){
 		var data = $('#source').val();
 		var x = JSON.parse(data);
-		data = {json: x};
+		data = {
+			json: x,
+			userToken: GithubAuth.getAuthCookie() || null
+		};
+		
 		data = JSON.stringify(data);
 		
 		//Save the json in a couchdb page
